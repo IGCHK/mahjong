@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <title>廣東麻雀計番計分</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, select, button { margin: 5px; }
+    table { margin-top: 20px; border-collapse: collapse; width: 60%; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <h1>廣東麻雀計番系統</h1>
+
+  <label for="winner">邊個贏：</label>
+  <select id="winner">
+    <option value="player1">玩家1</option>
+    <option value="player2">玩家2</option>
+    <option value="player3">玩家3</option>
+    <option value="player4">玩家4</option>
+  </select>
+
+  <label for="fan">番數：</label>
+  <input type="number" id="fan" min="1" value="1">
+
+  <label for="rate">每番金額（$）：</label>
+  <input type="number" id="rate" min="1" value="10">
+
+  <button onclick="addScore()">紀錄番數</button>
+  <button onclick="resetScores()">清除紀錄</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>玩家</th>
+        <th>累積金額（$）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>玩家1</td><td id="score1">0</td></tr>
+      <tr><td>玩家2</td><td id="score2">0</td></tr>
+      <tr><td>玩家3</td><td id="score3">0</td></tr>
+      <tr><td>玩家4</td><td id="score4">0</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    let scores = {
+      player1: 0,
+      player2: 0,
+      player3: 0,
+      player4: 0
+    };
+
+    function addScore() {
+      const winner = document.getElementById("winner").value;
+      const fan = parseInt(document.getElementById("fan").value);
+      const rate = parseInt(document.getElementById("rate").value);
+
+      if (isNaN(fan) || fan <= 0 || isNaN(rate) || rate <= 0) {
+        alert("請輸入正確番數同每番金額");
+        return;
+      }
+
+      const amount = fan * rate;
+
+      // 贏家收三家，收3倍金額
+      scores[winner] += amount * 3;
+
+      for (let player in scores) {
+        if (player !== winner) {
+          scores[player] -= amount;
+        }
+      }
+
+      updateDisplay();
+    }
+
+    function resetScores() {
+      for (let player in scores) {
+        scores[player] = 0;
+      }
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById("score1").innerText = scores.player1;
+      document.getElementById("score2").innerText = scores.player2;
+      document.getElementById("score3").innerText = scores.player3;
+      document.getElementById("score4").innerText = scores.player4;
+    }
+  </script>
+
+</body>
+</html>
